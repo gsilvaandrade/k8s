@@ -16,8 +16,24 @@ spec:
     spec:
       containers:
         - name: goserver
-          image: "wesleywillians/hello-go:v5.3"
-          livenessProbe:
+          image: "wesleywillians/hello-go:v5.5"
+
+          startupProbe: # organiza o inicio readines e liveness
+            httpGet:
+              path: /healthz
+              port: 8000
+            periodSeconds: 3
+            failureThreshold: 30 # limite máximo para a aplicação iniciar
+
+          readinessProbe: # verificar se está pronto
+            httpGet:
+              path: /healthz
+              port: 8000
+            periodSeconds: 3
+            failureThreshold: 1
+            #initialDelaySeconds: 10
+
+          livenessProbe: # verificar se subiu
             httpGet:
               path: /healthz
               port: 8000
@@ -25,6 +41,7 @@ spec:
             failureThreshold: 1
             timeoutSeconds: 1
             successThreshold: 1
+            #initialDelaySeconds: 10
 
           envFrom:
             - configMapRef:
