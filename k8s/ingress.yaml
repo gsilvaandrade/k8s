@@ -4,9 +4,11 @@ metadata:
   name: ingress-host
   annotations:
     kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: "letsencrypt"
+    ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   rules:
-  - host: "ingress.portal"
+  - host: "ingress.portal.com"
     http:
       paths:
       - pathType: Prefix
@@ -14,3 +16,8 @@ spec:
         backend:
           serviceName: goserver-service
           servicePort: 80
+
+  tls:
+  - hosts:
+    - "ingress.portal.com"
+    secretName: letsencrypt-tls
